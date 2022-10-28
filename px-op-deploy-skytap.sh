@@ -18,22 +18,22 @@ done
 
 echo "Make Sure you're at the master node home directory: /home/pureuser"
 
-echo " Step 1. Verify JSON file FA API token from home directory:"
-cat pure.json
-sleep 10
-
-echo " Step 2. Create Kubernetes Secret called px-pure-secret:"
-kubectl create secret generic px-pure-secret --namespace kube-system --from-file=pure.json
-sleep 2
-kubectl get secrets -A | grep px-pure-secret
-sleep 5
-
-
 echo " Create namespace called portworx"
 kubectl create ns portworx
 sleep 2
 kubectl get ns -A
 sleep 5
+
+echo " Step 1. Verify JSON file FA API token from home directory:"
+cat pure.json
+sleep 10
+
+echo " Step 2. Create Kubernetes Secret called px-pure-secret:"
+kubectl create secret generic px-pure-secret --namespace portworx --from-file=pure.json
+sleep 2
+kubectl get secrets -A | grep px-pure-secret
+sleep 5
+
 
 echo " Step 3. Install PX Operator and check if the POD is running:"
 kubectl apply -f 'https://install.portworx.com/2.12?comp=pxoperator&ns=portworx'
@@ -56,7 +56,7 @@ kubectl apply -f px-spec-2.12.yaml
 
 echo " Step 5. Wait for Portworx Installation to complete:"
 while true; do
-    NUM_READY=`kubectl get pods -n portworx -l name=portworx -o wide | grep Running | grep 3/3 | wc -l`
+    NUM_READY=`kubectl get pods -n portworx -l name=portworx -o wide | grep Running | grep 2/2 | wc -l`
     if [ "${NUM_READY}" == "3" ]; then
         echo "All portworx nodes are ready !"
         kubectl get pods -n portworx -l name=portworx -o wide
