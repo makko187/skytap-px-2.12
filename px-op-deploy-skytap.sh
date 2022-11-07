@@ -93,7 +93,19 @@ kubectl apply -f grafana.yaml
 
 sleep 10
 
-echo "Install storkctl"
+echo " Step 6. Login to the FlashArray and verify the Cloud Volumes have been created - http://10.0.0.11"
+echo " Step 7. Configure Grafana using default user: admin | password: admin - http://10.0.0.30:30196"
+
+while true; do
+    read -p "Do you wish to install storkctl? " yn
+    case $yn in
+        [Yy]* ) echo 'Installing storkctl"; break;;
+        [Nn]* ) echo "Portworx Installation Complete!!!!"; exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+echo "sudo password=pureuser"
 
 STORK_POD=$(kubectl get pods -n portworx -l name=stork -o jsonpath='{.items[0].metadata.name}') &&
 kubectl cp -n portworx $STORK_POD:/storkctl/linux/storkctl ./storkctl
@@ -101,6 +113,3 @@ sudo mv storkctl /usr/local/bin &&
 sudo chmod +x /usr/local/bin/storkctl
 
 echo "Portworx Installation Complete!!!!"
-
-echo " Step 6. Login to the FlashArray and verify the Cloud Volumes have been created - http://10.0.0.11"
-echo " Step 7. Configure Grafana using default user: admin | password: admin - http://10.0.0.30:30196"
