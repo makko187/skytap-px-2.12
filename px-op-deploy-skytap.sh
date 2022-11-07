@@ -93,6 +93,13 @@ kubectl apply -f grafana.yaml
 
 sleep 10
 
+echo "Install storkctl"
+
+STORK_POD=$(kubectl get pods -n portworx -l name=stork -o jsonpath='{.items[0].metadata.name}') &&
+kubectl cp -n portworx $STORK_POD:/storkctl/linux/storkctl ./storkctl
+sudo mv storkctl /usr/local/bin &&
+sudo chmod +x /usr/local/bin/storkctl
+
 echo "Portworx Installation Complete!!!!"
 
 echo " Step 6. Login to the FlashArray and verify the Cloud Volumes have been created - http://10.0.0.11"
